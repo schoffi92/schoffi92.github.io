@@ -44,7 +44,7 @@ Filepath patterns:
 ```
 source/src/app/components/{component name}/{component name}.component.ts
 source/src/app/services/{service name}/{service name}.service.ts
-``
+```
 
 
 

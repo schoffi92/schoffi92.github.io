@@ -9,7 +9,7 @@ import { IBookItem } from '../../services/book.service';
     <thead>
       <tr>
         <th style="text-align: left">Title</th>
-        <th>Count</th>
+        <th style="text-align: left;">Count</th>
         <th></th>
       </tr>
     </thead>

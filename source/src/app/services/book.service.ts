@@ -8,13 +8,16 @@ export interface IBookItem {
   etag: string;
   volumeInfo: {
     title: string;
-    authors: Array<string>;
+    authors?: Array<string>;
     publisher: string;
     publishedDate: string;
     description: string;
     industryIdentifiers: Array<{type: string; identifier: string}>;
     pageCount: number;
   }
+
+  // Custom Stuff
+  inCart?: boolean,
 };
 
 @Injectable()

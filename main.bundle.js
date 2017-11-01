@@ -108,6 +108,7 @@ AppModule = __decorate([
             // Routing
             __WEBPACK_IMPORTED_MODULE_6__angular_router__["b" /* RouterModule */].forRoot(__WEBPACK_IMPORTED_MODULE_7__app_config__["a" /* AppRoutes */]),
             // Angular Materials' Modules
+            // todo: Angular Material does not work it should be checked why
             __WEBPACK_IMPORTED_MODULE_5__angular_material__["b" /* MatCardModule */],
             __WEBPACK_IMPORTED_MODULE_5__angular_material__["c" /* MatCommonModule */],
             __WEBPACK_IMPORTED_MODULE_5__angular_material__["a" /* MatButtonModule */],
@@ -305,6 +306,7 @@ var CartComponent = (function () {
      * If the count is lower or equal with 0 it will remove the item from the cart
      *
      * @param id string
+     * @param currentIndex number
      */
     CartComponent.prototype.setCount = function (id, currentIndex) {
         // Get Item Index from cart
@@ -337,7 +339,7 @@ var CartComponent = (function () {
 CartComponent = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["o" /* Component */])({
         selector: 'app-cart',
-        template: "\n  <table style=\"width: 100%;\">\n    <thead>\n      <tr>\n        <th style=\"text-align: left\">Title</th>\n        <th>Count</th>\n        <th></th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr *ngFor=\"let item of items; let i = index\">\n        <td>{{ item.title }}</td>\n        <td>\n          <input type=\"number\" min=\"0\" [(ngModel)]=\"item.count\" />\n        </td>\n        <td>\n          <button mdButton (click)=\"setCount( item.id, i )\">Set Count</button>\n          <button mdButton (click)=\"removeFromCart( item.id )\">Remove From Cart</button>\n        </td>\n      </tr>\n    </tbody>\n  </table>\n  "
+        template: "\n  <table style=\"width: 100%;\">\n    <thead>\n      <tr>\n        <th style=\"text-align: left\">Title</th>\n        <th style=\"text-align: left;\">Count</th>\n        <th></th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr *ngFor=\"let item of items; let i = index\">\n        <td>{{ item.title }}</td>\n        <td>\n          <input type=\"number\" min=\"0\" [(ngModel)]=\"item.count\" />\n        </td>\n        <td>\n          <button mdButton (click)=\"setCount( item.id, i )\">Set Count</button>\n          <button mdButton (click)=\"removeFromCart( item.id )\">Remove From Cart</button>\n        </td>\n      </tr>\n    </tbody>\n  </table>\n  "
     }),
     __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__services_cart_service__["a" /* CartService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__services_cart_service__["a" /* CartService */]) === "function" && _a || Object])
 ], CartComponent);
@@ -384,6 +386,7 @@ NavbarComponent = __decorate([
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__("../../../router/@angular/router.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_book_service__ = __webpack_require__("../../../../../src/app/services/book.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_cart_service__ = __webpack_require__("../../../../../src/app/services/cart.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -396,8 +399,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var SearchComponent = (function () {
-    function SearchComponent(bookService, route) {
+    function SearchComponent(cartService, bookService, route) {
+        this.cartService = cartService;
         this.bookService = bookService;
         this.route = route;
         // Search Field
@@ -414,7 +419,10 @@ var SearchComponent = (function () {
                 _this.searchFieldValue = params.keyword;
                 // Asks Books from Google's API
                 _this.bookService.getBooks(params.keyword).then(function (items) {
-                    _this.items = items;
+                    _this.items = items.map(function (item) {
+                        item.inCart = _this.cartService.getItemIndex(item.id) != -1;
+                        return item;
+                    });
                 });
             }
             else {
@@ -424,17 +432,31 @@ var SearchComponent = (function () {
             }
         });
     };
+    /**
+     * Add Book To Cart
+     */
+    SearchComponent.prototype.addToCart = function (index) {
+        this.cartService.addItem(this.items[index]);
+        this.items[index].inCart = true;
+    };
+    /**
+     * Remove Book From Cart
+     */
+    SearchComponent.prototype.removeFromCart = function (index) {
+        this.cartService.removeItem(this.items[index].id);
+        this.items[index].inCart = false;
+    };
     return SearchComponent;
 }());
 SearchComponent = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["o" /* Component */])({
         selector: 'app-search',
-        template: "\n  <div class=\"search-box\">\n    <input mdInput placeholder=\"Book Name\" [(ngModel)]=\"searchFieldValue\" />\n    <button mdButton [routerLink]=\"['/search', searchFieldValue]\">\n      Search\n    </button>\n  </div>\n\n  <div *ngFor=\"let item of items\" class=\"books items\">\n    <md-card class=\"card\">\n      <md-card-title [routerLink]=\"['/book/', item.id]\">\n          {{ item.volumeInfo.title }}\n      </md-card-title>\n    </md-card>\n  </div>\n  "
+        template: "\n  <div class=\"search-box\">\n    <input mdInput placeholder=\"Book Name\" [(ngModel)]=\"searchFieldValue\" />\n    <button mdButton [routerLink]=\"['/search', searchFieldValue]\">\n      Search\n    </button>\n  </div>\n\n\n  <table style=\"width: 100%;\" *ngIf=\"items.length > 0\">\n    <tr>\n      <th style=\"text-align: left;\">\n        Title\n      </th>\n      <th>\n        \n      </th>\n    </tr>\n    <tr *ngFor=\"let item of items; let i = index\">\n      <td [routerLink]=\"['/book/', item.id]\">\n        {{ item.volumeInfo.title }}\n      </td>\n      <td>\n        <button mdButton (click)=\"addToCart( i )\">Add To Cart</button>\n        <button mdButton (click)=\"removeFromCart( i )\" *ngIf=\"item.inCart\">Remove From Cart</button>\n      </td>\n    </tr>\n  </table>\n  "
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__services_book_service__["a" /* BookService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__services_book_service__["a" /* BookService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* ActivatedRoute */]) === "function" && _b || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__services_cart_service__["a" /* CartService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__services_cart_service__["a" /* CartService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__services_book_service__["a" /* BookService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__services_book_service__["a" /* BookService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* ActivatedRoute */]) === "function" && _c || Object])
 ], SearchComponent);
 
-var _a, _b;
+var _a, _b, _c;
 //# sourceMappingURL=search.component.js.map
 
 /***/ }),
@@ -537,6 +559,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 ;
 var CartService = (function () {
     function CartService() {
+        // todo: the cart becomes buggy when user use another borwser tab to add items to cart
         this.CART_KEY = "cart";
         // Cart Items' Storage
         this.cartItemStore = [];
@@ -588,6 +611,7 @@ var CartService = (function () {
         // Add item to the cart or increase the count Of This Item
         var index = this.getItemIndex(item.id);
         if (index == -1) {
+            // The Book does not exists in the cart, so we create a 
             var r = {
                 id: item.id,
                 title: item.volumeInfo.title || "",
@@ -597,6 +621,7 @@ var CartService = (function () {
             this.cartItemStore.push(r);
         }
         else {
+            // The Book exists, so we just add more to the cart
             this.cartItemStore[index].count += count;
         }
         this.saveToLocalStorage();
