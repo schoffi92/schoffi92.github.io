@@ -14,13 +14,13 @@ import { IBookItem } from '../../services/book.service';
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of items">
+      <tr *ngFor="let item of items; let i = index">
         <td>{{ item.title }}</td>
         <td>
           <input type="number" min="0" [(ngModel)]="item.count" />
         </td>
         <td>
-          <button mdButton (click)="setCount( item.id )">Set Count</button>
+          <button mdButton (click)="setCount( item.id, i )">Set Count</button>
           <button mdButton (click)="removeFromCart( item.id )">Remove From Cart</button>
         </td>
       </tr>
@@ -53,21 +53,22 @@ export class CartComponent implements OnInit {
    * If the count is lower or equal with 0 it will remove the item from the cart
    * 
    * @param id string
+   * @param currentIndex number
    */
-  setCount(id: string) {
+  setCount(id: string, currentIndex: number) {
     // Get Item Index from cart
     // We use the same structure so the index will not be different
     let index = this.cartService.getItemIndex( id );
 
     // If the element does not exists or the index does not equal
-    if (index < 0 || (this.items[index].id == this.cartService.items[index].id || "")) {
+    if (index < 0) {
       // Refresh cart's items and then return
       this.cartService.getItems();
       return;
     }
 
-    if (this.items[index].count > 0) {
-      this.cartService.setItemCount( id, this.items[index].count );
+    if (this.items[currentIndex].count > 0) {
+      this.cartService.setItemCount( id, this.items[currentIndex].count );
     }
     else {
       // If the count is zero or lower

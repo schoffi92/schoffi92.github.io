@@ -306,18 +306,18 @@ var CartComponent = (function () {
      *
      * @param id string
      */
-    CartComponent.prototype.setCount = function (id) {
+    CartComponent.prototype.setCount = function (id, currentIndex) {
         // Get Item Index from cart
         // We use the same structure so the index will not be different
         var index = this.cartService.getItemIndex(id);
         // If the element does not exists or the index does not equal
-        if (index < 0 || (this.items[index].id == this.cartService.items[index].id)) {
+        if (index < 0) {
             // Refresh cart's items and then return
             this.cartService.getItems();
             return;
         }
-        if (this.items[index].count > 0) {
-            this.cartService.setItemCount(id, this.items[index].count);
+        if (this.items[currentIndex].count > 0) {
+            this.cartService.setItemCount(id, this.items[currentIndex].count);
         }
         else {
             // If the count is zero or lower
@@ -337,7 +337,7 @@ var CartComponent = (function () {
 CartComponent = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["o" /* Component */])({
         selector: 'app-cart',
-        template: "\n  <table style=\"width: 100%;\">\n    <thead>\n      <tr>\n        <th style=\"text-align: left\">Title</th>\n        <th>Count</th>\n        <th></th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr *ngFor=\"let item of items\">\n        <td>{{ item.title }}</td>\n        <td>\n          <input type=\"number\" min=\"0\" [(ngModel)]=\"item.count\" />\n        </td>\n        <td>\n          <button mdButton (click)=\"setCount( item.id )\">Set Count</button>\n          <button mdButton (click)=\"removeFromCart( item.id )\">Remove From Cart</button>\n        </td>\n      </tr>\n    </tbody>\n  </table>\n  "
+        template: "\n  <table style=\"width: 100%;\">\n    <thead>\n      <tr>\n        <th style=\"text-align: left\">Title</th>\n        <th>Count</th>\n        <th></th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr *ngFor=\"let item of items; let i = index\">\n        <td>{{ item.title }}</td>\n        <td>\n          <input type=\"number\" min=\"0\" [(ngModel)]=\"item.count\" />\n        </td>\n        <td>\n          <button mdButton (click)=\"setCount( item.id, i )\">Set Count</button>\n          <button mdButton (click)=\"removeFromCart( item.id )\">Remove From Cart</button>\n        </td>\n      </tr>\n    </tbody>\n  </table>\n  "
     }),
     __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__services_cart_service__["a" /* CartService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__services_cart_service__["a" /* CartService */]) === "function" && _a || Object])
 ], CartComponent);
