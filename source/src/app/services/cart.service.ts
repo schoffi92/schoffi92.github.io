@@ -14,6 +14,8 @@ export interface ICartItem {
 @Injectable()
 export class CartService {
 
+  // todo: the cart becomes buggy when user use another borwser tab to add items to cart
+
   private CART_KEY: string = "cart";
 
   // Cart Items' Storage
@@ -78,6 +80,7 @@ export class CartService {
     // Add item to the cart or increase the count Of This Item
     let index: number = this.getItemIndex(item.id);
     if (index == -1) {
+      // The Book does not exists in the cart, so we create a 
       let r: ICartItem = {
         id: item.id,
         title: item.volumeInfo.title || "",
@@ -86,6 +89,7 @@ export class CartService {
       };
       this.cartItemStore.push( r );
     } else {
+      // The Book exists, so we just add more to the cart
       this.cartItemStore[index].count += count;
     }
 
