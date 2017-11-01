@@ -1,0 +1,21 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+.card md-card-title {
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.search-box {
+    margin:8px;
+    padding: 8px;
+    border: 1px solid #aaa;
+}
+
+.items {
+    margin: 8px;
+}
+
+.clearer {
+    clear: both;
+}
