@@ -8,7 +8,7 @@ import { CartService } from '../../services/cart.service';
   selector: 'app-book',
   template: `
     <div class="search-box">
-      <button mdButton (click)="_location.back()">Back</button>
+      <button mdButton (click)="stepbackInHistory()">Back</button>
       <button mdButton (click)="addToCart()" *ngIf="bookId != '' && !notFound">Add To Cart</button>
       <span *ngIf="itemIsAlreadyInCart">This book is already in your cart</span>
       <button mdButton (click)="removeFromCart()" *ngIf="itemIsAlreadyInCart">Remove From Cart</button>
@@ -35,22 +35,22 @@ import { CartService } from '../../services/cart.service';
 export class BookComponent implements OnInit {
 
   // Book's Id
-  private bookId: string = "";
+  public bookId: string = "";
 
   // Generated Author (this is a concat from authors array)
-  private author: string = "";
+  public author: string = "";
 
   // Generated Title
-  private title: string = "";
+  public title: string = "";
 
   // BookItem
-  private item: IBookItem;
+  public item: IBookItem;
 
   // Flag what tells the book is exists in the google's book records
-  private notFound: boolean = false;
+  public notFound: boolean = false;
 
   // Item Is in our cart?
-  private itemIsAlreadyInCart: boolean = false;
+  public itemIsAlreadyInCart: boolean = false;
 
   
   constructor( private bookService: BookService, private cartService: CartService,
@@ -109,5 +109,12 @@ export class BookComponent implements OnInit {
   {
     this.itemIsAlreadyInCart = false;
     this.cartService.removeItem(this.item.id);
+  }
+
+  /**
+   * Step back in the history
+   */
+  stepbackInHistory() {
+    this._location.back();
   }
 }

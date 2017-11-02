@@ -250,12 +250,18 @@ var BookComponent = (function () {
         this.itemIsAlreadyInCart = false;
         this.cartService.removeItem(this.item.id);
     };
+    /**
+     * Step back in the history
+     */
+    BookComponent.prototype.stepbackInHistory = function () {
+        this._location.back();
+    };
     return BookComponent;
 }());
 BookComponent = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["o" /* Component */])({
         selector: 'app-book',
-        template: "\n    <div class=\"search-box\">\n      <button mdButton (click)=\"_location.back()\">Back</button>\n      <button mdButton (click)=\"addToCart()\" *ngIf=\"bookId != '' && !notFound\">Add To Cart</button>\n      <span *ngIf=\"itemIsAlreadyInCart\">This book is already in your cart</span>\n      <button mdButton (click)=\"removeFromCart()\" *ngIf=\"itemIsAlreadyInCart\">Remove From Cart</button>\n    </div>\n    <div *ngIf=\"bookId == '' && !notFound\">\n      Please wait loading...\n    </div>\n    <div *ngIf=\"bookId != '' && notFound\">\n      Not found\n    </div>\n    <md-card class=\"card\" *ngIf=\"bookId != '' && !notFound\">\n      <md-card-title>{{ this.item.volumeInfo.title }}</md-card-title>\n      <md-card-content>\n        <p>Written by {{ (this.item.volumeInfo.authors || []).join(\" & \") || \"Anonymus\" }}</p>\n\n        <img alt=\"\" src=\"\" [src]=\"this.item.volumeInfo.imageLinks['thumbnail']\" *ngIf=\"this.item.volumeInfo.imageLinks\" />\n        \n        <h3>Description:</h3>\n        <div class=\"book-description\" [innerHTML]=\" this.item.volumeInfo.description || '<p>No Description</p>' \"></div>\n      </md-card-content>\n    </md-card>\n  "
+        template: "\n    <div class=\"search-box\">\n      <button mdButton (click)=\"stepbackInHistory()\">Back</button>\n      <button mdButton (click)=\"addToCart()\" *ngIf=\"bookId != '' && !notFound\">Add To Cart</button>\n      <span *ngIf=\"itemIsAlreadyInCart\">This book is already in your cart</span>\n      <button mdButton (click)=\"removeFromCart()\" *ngIf=\"itemIsAlreadyInCart\">Remove From Cart</button>\n    </div>\n    <div *ngIf=\"bookId == '' && !notFound\">\n      Please wait loading...\n    </div>\n    <div *ngIf=\"bookId != '' && notFound\">\n      Not found\n    </div>\n    <md-card class=\"card\" *ngIf=\"bookId != '' && !notFound\">\n      <md-card-title>{{ this.item.volumeInfo.title }}</md-card-title>\n      <md-card-content>\n        <p>Written by {{ (this.item.volumeInfo.authors || []).join(\" & \") || \"Anonymus\" }}</p>\n\n        <img alt=\"\" src=\"\" [src]=\"this.item.volumeInfo.imageLinks['thumbnail']\" *ngIf=\"this.item.volumeInfo.imageLinks\" />\n        \n        <h3>Description:</h3>\n        <div class=\"book-description\" [innerHTML]=\" this.item.volumeInfo.description || '<p>No Description</p>' \"></div>\n      </md-card-content>\n    </md-card>\n  "
     }),
     __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__services_book_service__["a" /* BookService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__services_book_service__["a" /* BookService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_4__services_cart_service__["a" /* CartService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__services_cart_service__["a" /* CartService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["a" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["a" /* ActivatedRoute */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_1__angular_common__["f" /* Location */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_common__["f" /* Location */]) === "function" && _d || Object])
 ], BookComponent);

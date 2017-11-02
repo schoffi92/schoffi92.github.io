@@ -38,10 +38,10 @@ import { CartService } from "../../services/cart.service";
 export class SearchComponent implements OnInit {
 
   // Search Field
-  searchFieldValue: string = "";
+  public searchFieldValue: string = "";
 
   // Books
-  items: Array<IBookItem> = [];
+  public items: Array<IBookItem> = [];
 
   constructor( private cartService: CartService, private bookService: BookService, private route: ActivatedRoute ) { }
 
